@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apuestas</title>
+    <title>Insertar apuesta</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
@@ -33,19 +33,26 @@
           </div>
         </div>
       </nav>
-    <h1>Apuestas</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Resultado</th>
-          <th>Fecha</th>
-        </tr>
-      </thead>
-      <tbody id="apuestasTable">
-      </tbody>
-    </table>
-    <a href="insertapuesta.html" class="btn btn-primary">Insertar apuesta</a>
+    <h1>Insertar apuesta</h1>
+    <form id="insertApuestaForm">
+        <div class="form-group">
+            <label for="idEquipo">Id Apuesta</label>
+            <input type="number" class="form-control" id="cajaid">
+        </div>
+        <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <input type="text" class="form-control" id="cajausuario">
+      </div>
+      <div class="form-group">
+        <label for="resultado">Resultado</label>
+        <input type="text" class="form-control" id="cajaresultado">
+      </div>
+      <div class="form-group">
+        <label for="fecha">Fecha</label>
+        <input type="text" class="form-control" id="cajafecha">
+      </div>
+      <button class="btn btn-primary" id="insertApuestaButton" onclick="insertApuesta(event)">Insertar apuesta</button>
+    </form>
     <!-- jQuery -->
     <script src="js/jquery-3.7.1.js"></script>
     <!-- Bootstrap JS Bundle -->
@@ -57,14 +64,26 @@
         });
       });
 
-      function getApuestas(){
-        $.getJSON('https://apiapuestas.azurewebsites.net/api/Apuestas', function(data) {
-          $.each(data, function(index, apuesta) {
-            $('#apuestasTable').append('<tr><td>' + apuesta.usuario + '</td><td>' + apuesta.resultado + '</td><td>' + apuesta.fecha + '</td></tr>');
-          });
+      function insertApuesta(event){
+        event.preventDefault();
+        let apuesta = {
+          idApuesta: $('#cajaid').val(),
+          usuario: $('#cajausuario').val(),
+          resultado: $('#cajaresultado').val(),
+          fecha: $('#cajafecha').val()
+        };
+        apuestaJSON = JSON.stringify(apuesta);
+        $.ajax({
+          url: 'https://apiapuestas.azurewebsites.net/api/Apuestas',
+          type: 'POST',
+          contentType: 'application/json',
+          data: apuestaJSON,
+          success: function(response) {
+            console.log("insertada correctamente");
+            window.location.href = 'apuestas.html';
+          }
         });
       }
-      getApuestas();
     </script>
 </body>
 </html>
